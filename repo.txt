@@ -1,0 +1,49 @@
+#apt install apache2 -y
+#apt install php php-{common,mysql,xml,xmlrpc,curl,gd,imagick,cli,dev,imap,mbstring,opcache,soap,zip,intl} -y
+#apt install mariadb-server
+
+#mysql -u root -p
+#create database wp;
+#create user 'admin'@'localhost' identified by 'password';
+#grant all privileges on wp.* to 'admin'@'localhost';
+#flush privilegs;
+#exit;
+
+#apt install wget unzip -y
+#wget https://wordpress.org/latest.zip
+#unzip latest.zip
+
+#mv wordpress/ /var/www/html
+#rm latest.zip
+#chown www-data:www-data -R /var/www/html/wordpress
+#chmod -R 755 /var/www/html/worpdress
+#nano /wtc/apache2/sites-availabe/000-default.com
+#nano /wtc/apache2/sites-availabe/wordpress.conf
+
+```
+<VirtualHost *:80>
+
+ServerAdmin admin@example.com
+
+DocumentRoot /var/www/html/wordpress
+ServerName example.com
+ServerAlias www.example.com
+
+<Directory /var/www/html/wordpress/>
+
+Options FollowSymLinks
+AllowOverride All
+Require all granted
+
+</Directory>
+
+ErrorLog ${APACHE_LOG_DIR}/error.log
+CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+```
+
+#a2ensite wordpress.conf
+#a2enmod rewrite
+#a2dissite 000-default.conf
+#systemctl restart apache2
