@@ -6,7 +6,7 @@
 #create database wp;
 #create user 'admin'@'localhost' identified by 'password';
 #grant all privileges on wp.* to 'admin'@'localhost';
-#flush privilegs;
+#flush privileges;
 #exit;
 
 #apt install wget unzip -y
@@ -17,8 +17,7 @@
 #rm latest.zip
 #chown www-data:www-data -R /var/www/html/wordpress
 #chmod -R 755 /var/www/html/worpdress
-#nano /wtc/apache2/sites-availabe/000-default.com
-#nano /wtc/apache2/sites-availabe/wordpress.conf
+#nano /etc/apache2/sites-availabe/000-default.com
 
 ```
 <VirtualHost *:80>
@@ -43,7 +42,50 @@ CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
 
-#a2ensite wordpress.conf
-#a2enmod rewrite
-#a2dissite 000-default.conf
 #systemctl restart apache2
+
+####
+
+#apt install bind9 dnsutils resolvconf -y
+#nano /etc/bind9/db.local
+
+@  IN  SDA  localhost.  root.localhost (
+
+....
+
+
+;
+@  IN  NS  localhost
+@  IN  A  127.0.0.1
+www.localhost  IN  CNAME  localhost
+
+$nano /etc/bind/db.127
+
+@  IN  SDA  localhost.  root.localhost (
+
+....
+
+
+;
+@  IN  NS  localhost
+1  IN  PTR  localhost
+1  IN  PTR  www.localhost
+
+#nano /etc/bind/named.conf
+
+zone "localhost" {
+  type master;
+  file "/etc/bind/db.local";
+};
+
+zone "0.0.127.in-addr.arpa {
+  type master;
+  file "/etc/bind/db.127";
+};
+
+#nano /etc/resolv.conf
+
+nameserver 127.0.0.1
+search localhost
+
+#systemctl restart bind9
